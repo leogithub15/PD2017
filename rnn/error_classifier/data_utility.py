@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def load_data(file_name, ratio, columns):
+def load_data(file_name, ratio, columns, batch_Size):
     """ Load data from file, select the desired columns (input, target)
     and split in train, test and validation according with the specified ratio
 
@@ -33,7 +33,16 @@ def load_data(file_name, ratio, columns):
     X_val_lengths = [len(i) for i in X_val]
     X_test_lengths = [len(i) for i in X_test]
 
-    return X_train, X_train_lengths, X_val, X_val_lengths, X_test, X_test_lengths, y_train, y_val, y_test
+    train_batch_sizes=[]
+    for i in range (int(X_train_lengths/batch_Size)):
+        train_batch_sizes[i] = max(X_train_lengths[i*(batch_Size):i*(batch_Size)+batch_Size-1])
+    test_batch_sizes = []
+    for i in range (int(X_test_lengths/batch_Size)):
+        test_batch_sizes[i] = max(X_test_lengths[i*(batch_Size):i*(batch_Size)+batch_Size-1])
+
+
+
+    return X_train, X_train_lengths, X_val, X_val_lengths, X_test, X_test_lengths, y_train, y_val, y_test,train_batch_sizes,test_batch_sizes
 
 def one_hot_encode(data, vocabulary):
     batches = []
@@ -45,13 +54,15 @@ def one_hot_encode(data, vocabulary):
 
     return np.asarray(batches)
 
-def emb_encode(data, vocabulary):
+def emb_encode(data, vocabulary, batch_sequences_sizes,batch_size ):
     batches = []
+    index_in_batch=0
     for e in data:
-        batch = np.zeros(len(e))
+        batch = np.zeros(batch_sequences_sizes[int(index_in_batch/batch_size)])
         for i in range(len(e)):
-            batch[i] = vocabulary.index(e[i])
+            batch[i] = vocabulary.index(e[i]) + 1
         batches.append(batch)
+        index_in_batch+=1
 
     return np.asarray(batches)
     #return batches

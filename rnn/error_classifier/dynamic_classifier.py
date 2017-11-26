@@ -2,10 +2,10 @@ import tensorflow as tf
 
 class DynamicClassifier:
 
-    def __init__(self, vocab_size, batch_size, input_embedding_size, output_classes, num_units, num_layers):
+    def __init__(self, vocab_size, input_embedding_size, output_classes, num_units, num_layers):
 
         #self.inputs = tf.placeholder(tf.float32, (None, None, vocab_size))
-        self.inputs = tf.placeholder(shape=(batch_size, None), dtype=tf.int32, name='encoder_inputs')
+        self.inputs = tf.placeholder(shape=(None, None), dtype=tf.int32, name='encoder_inputs')
         embeddings = tf.Variable(tf.random_uniform([vocab_size, input_embedding_size], -1.0, 1.0), dtype=tf.float32)
         input_embedded = tf.nn.embedding_lookup(embeddings, self.inputs)
 
